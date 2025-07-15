@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll-Driven 3D Experience</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Nasalization';
+      src: url('/NasalizationRg.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .logo, .tag, .cta-btn, .next-btn {
+      font-family: 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+    }
+    .navbar {
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32px 48px 0 48px;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .nav-links li a.active, .nav-links li a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .talk-link {
+      color: #fff;
+      text-decoration: underline;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .talk-link:hover {
+      color: #ffb86c;
+    }
+    .hero-section {
+      min-height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      transition: opacity 0.8s cubic-bezier(.4,0,.2,1), max-height 0.8s cubic-bezier(.4,0,.2,1);
+      opacity: 1;
+      max-height: 2000px;
+      z-index: 2;
+    }
+    .hero-section.collapsed {
+      opacity: 0;
+      max-height: 0;
+      pointer-events: none;
+    }
+    .main-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      min-height: 100vh;
+      padding-top: 100px;
+      box-sizing: border-box;
+      gap: 32px;
+    }
+    .hero-left {
+      flex: 1 1 0;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding-left: 5vw;
+    }
+    .hero-left h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5em;
+      text-shadow: 0 0 24px #ffb86c, 0 0 48px #ffb86c44, 0 2px 24px #ffb86c22;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      color: #bdbdbd;
+      margin-bottom: 2em;
+      font-weight: 400;
+    }
+    .cta-btn {
+      background: #181c20;
+      color: #fff;
+      border: none;
+      border-radius: 2em;
+      padding: 0.9em 2.2em;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 2px 16px #ffb86c33;
+      margin-top: 1em;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover {
+      background: #ffb86c;
+      color: #181c20;
+    }
+    .hero-center {
+      flex: 0 0 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 520px;
+      background: #111;
+      border-radius: 32px;
+      box-shadow: 0 8px 32px #000a, 0 2px 16px #0008;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    #sequence-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      user-select: none;
+      display: block;
+      border-radius: 32px;
+    }
+    .hero-right {
+      flex: 1 1 0;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding-right: 5vw;
+    }
+    .side-desc {
+      font-size: 1.1rem;
+      color: #bdbdbd;
+      margin-bottom: 2em;
+      text-align: right;
+      font-weight: 400;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .tag {
+      background: none;
+      border: 2px solid #fff;
+      color: #fff;
+      border-radius: 2em;
+      padding: 0.4em 1.2em;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .tag:hover {
+      background: #ffb86c;
+      color: #181c20;
+      border-color: #ffb86c;
+    }
+    /* Next Section */
+    .next-section {
+      min-height: 100vh;
+      width: 100vw;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s cubic-bezier(.4,0,.2,1);
+      z-index: 1;
+    }
+    .next-section.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .next-content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 60px 24px 40px 24px;
+    }
+    .next-title {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5em;
+      letter-spacing: 0.01em;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.2em;
+    }
+    .next-title .wave-letter {
+      opacity: 0;
+      display: inline-block;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+      visibility: hidden;
+    }
+    .next-title .wave-letter.visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+    .next-desc {
+      font-size: 1.2rem;
+      color: #bdbdbd;
+      margin-bottom: 2em;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+      visibility: hidden;
+    }
+    .next-desc.visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+    .next-btn {
+      background: #181c20;
+      color: #fff;
+      border: none;
+      border-radius: 2em;
+      padding: 0.9em 2.2em;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 2px 16px #0002;
+      margin-top: 1em;
+      transition: background 0.2s, opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+      opacity: 0;
+      transform: translateY(40px);
+      visibility: hidden;
+    }
+    .next-btn.visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+    .fade-in-page {
+      opacity: 0;
+      transition: opacity 1.2s cubic-bezier(.4,0,.2,1);
+    }
+    .fade-in-page.visible {
+      opacity: 1;
+    }
+    .slide-in-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+    }
+    .slide-in-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .slide-in-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+    }
+    .slide-in-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .slide-in-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+    }
+    .slide-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (max-width: 1100px) {
+      .main-content { flex-direction: column; gap: 24px; padding-top: 80px; }
+      .hero-left, .hero-right { max-width: 90vw; align-items: center; text-align: center; padding: 0; }
+      .hero-right { justify-content: flex-start; }
+      .hero-center { margin: 0 0 24px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="fade-in-page" id="fade-in-page">
+    <nav class="navbar slide-in-top-fade">
+      <div class="logo slide-in-left">stX</div>
+      <ul class="nav-links slide-in-up">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Services</a></li>
+      </ul>
+      <div class="nav-right slide-in-right">
+        <a href="#" class="talk-link">Let's talk <span class="arrow">↗</span></a>
+      </div>
+    </nav>
+    <section class="hero-section" id="hero-section">
+      <div class="main-content">
+        <div class="hero-left slide-in-left">
+          <h1>Design That Feels.<br>Experiences That Resonate.</h1>
+          <p class="hero-desc">We blend creativity, emotion, and innovation to create digital worlds that your audience can connect with.</p>
+          <a href="#" class="cta-btn slide-in-up">LET’S TALK <span class="arrow">↗</span></a>
+        </div>
+        <div class="hero-center slide-in-up">
+          <img id="sequence-img" src="sequence/00001.webp" alt="Scroll Animation Frame" draggable="false">
+        </div>
+        <div class="hero-right slide-in-right">
+          <p class="side-desc">Whether through intuitive interfaces, immersive 3D, or bold visual storytelling, we design moments that people don’t just see — they feel.</p>
+          <div class="tags">
+            <span class="tag slide-in-up">UI/UX</span>
+            <span class="tag slide-in-up" style="transition-delay:0.1s">3D VISUALIZATION</span>
+            <span class="tag slide-in-up" style="transition-delay:0.2s">DEVELOPMENT</span>
+            <span class="tag slide-in-up" style="transition-delay:0.3s">+</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <section class="next-section" id="next-section">
+    <div class="next-content">
+      <h2 class="next-title" id="wave-title">Welcome to the Next Section</h2>
+      <p class="next-desc" id="next-desc">This is a placeholder for your next content. You can replace this with your real site sections.</p>
+      <button class="next-btn" id="next-btn">CONTINUE <span style="font-size:1.2em;vertical-align:middle;">↗</span></button>
+    </div>
+  </section>
+  <script>
+    // --- CONFIG ---
+    const frameCount = 650;
+    const imgFolder = 'sequence/';
+    const imgPrefix = '';
+    const imgExt = '.webp';
+    const pad = n => n.toString().padStart(5, '0');
+
+    const imgElem = document.getElementById('sequence-img');
+    const heroSection = document.getElementById('hero-section');
+    const nextSection = document.getElementById('next-section');
+    let currentFrame = 1;
+    let virtualScroll = 0; // can be negative or >1, but will clamp
+    let currentScrollProgress = 0; // 0 to 1
+    let targetScrollProgress = 0; // 0 to 1
+    let lastY = null;
+
+    // Prevent page scroll while in animation range
+    function preventScroll(e) {
+      if (currentScrollProgress < 0.98) {
+        window.scrollTo(0, 0);
+        e.preventDefault();
+      }
+    }
+    window.addEventListener('scroll', preventScroll, { passive: false });
+
+    // Scroll wheel to scrub frames
+    window.addEventListener('wheel', function(e) {
+      virtualScroll += e.deltaY * 0.001;
+      virtualScroll = Math.max(0, Math.min(1, virtualScroll));
+      targetScrollProgress = virtualScroll;
+      if (currentScrollProgress < 0.98 || (currentScrollProgress >= 0.98 && e.deltaY < 0)) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Touch drag to scrub frames
+    window.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) lastY = e.touches[0].clientY;
+    });
+    window.addEventListener('touchmove', e => {
+      if (lastY !== null && e.touches.length === 1) {
+        let delta = lastY - e.touches[0].clientY;
+        virtualScroll += delta * 0.002;
+        virtualScroll = Math.max(0, Math.min(1, virtualScroll));
+        targetScrollProgress = virtualScroll;
+        lastY = e.touches[0].clientY;
+        if (currentScrollProgress < 0.98 || (currentScrollProgress >= 0.98 && delta < 0)) {
+          e.preventDefault();
+        }
+      }
+    }, { passive: false });
+    window.addEventListener('touchend', () => { lastY = null; });
+
+    function updateFrame() {
+      const frameIndex = Math.round(currentScrollProgress * (frameCount - 1)) + 1;
+      if (frameIndex !== currentFrame) {
+        currentFrame = frameIndex;
+        imgElem.src = `${imgFolder}${imgPrefix}${pad(currentFrame)}${imgExt}`;
+      }
+    }
+
+    function animate() {
+      currentScrollProgress += (targetScrollProgress - currentScrollProgress) * 0.15;
+      if (Math.abs(targetScrollProgress - currentScrollProgress) < 0.0001) {
+        currentScrollProgress = targetScrollProgress;
+      }
+      updateFrame();
+      // Section transitions based on progress
+      if (currentScrollProgress >= 0.98) {
+        heroSection.classList.add('collapsed');
+        nextSection.classList.add('visible');
+        setTimeout(() => {
+          window.removeEventListener('scroll', preventScroll, { passive: false });
+         // Animate wave and fade-in for next section
+         const title = document.getElementById('wave-title');
+         const desc = document.getElementById('next-desc');
+         const btn = document.getElementById('next-btn');
+         if (title && !title.classList.contains('wave-animated')) {
+           // Split into spans
+           const text = title.textContent;
+           title.innerHTML = '';
+           Array.from(text).forEach((char, i) => {
+             const span = document.createElement('span');
+             span.textContent = char;
+             span.className = 'wave-letter';
+             span.style.visibility = 'hidden';
+             title.appendChild(span);
+           });
+           setTimeout(() => {
+             title.classList.add('wave-animated');
+             title.querySelectorAll('.wave-letter').forEach((el, i) => setTimeout(() => {
+               el.classList.add('visible');
+               el.style.visibility = 'visible';
+             }, i*40));
+           }, 100);
+         }
+         setTimeout(() => { if (desc) { desc.classList.add('visible'); desc.style.visibility = 'visible'; } }, 700);
+         setTimeout(() => { if (btn) { btn.classList.add('visible'); btn.style.visibility = 'visible'; } }, 1100);
+        }, 900);
+      } else {
+        heroSection.classList.remove('collapsed');
+        nextSection.classList.remove('visible');
+        // Remove wave/fade-in classes if going back
+        const title = document.getElementById('wave-title');
+        const desc = document.getElementById('next-desc');
+        const btn = document.getElementById('next-btn');
+        if (title && title.classList.contains('wave-animated')) {
+          title.classList.remove('wave-animated');
+          title.querySelectorAll('.wave-letter').forEach(el => el.classList.remove('visible'));
+          // Restore text content
+          title.textContent = 'Welcome to the Next Section';
+          // Remove visibility in case of back scroll
+          title.style.visibility = '';
+        }
+        if (desc) { desc.classList.remove('visible'); desc.style.visibility = 'hidden'; }
+        if (btn) { btn.classList.remove('visible'); btn.style.visibility = 'hidden'; }
+        window.addEventListener('scroll', preventScroll, { passive: false });
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Fade in page and slide in text on load
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        document.getElementById('fade-in-page').classList.add('visible');
+        document.querySelectorAll('.slide-in-left').forEach((el, i) => setTimeout(() => el.classList.add('visible'), 200 + i*80));
+        document.querySelectorAll('.slide-in-right').forEach((el, i) => setTimeout(() => el.classList.add('visible'), 400 + i*80));
+        document.querySelectorAll('.slide-in-up').forEach((el, i) => setTimeout(() => el.classList.add('visible'), 600 + i*80));
+      }, 100);
+    });
+  </script>
+</body>
+</html> 

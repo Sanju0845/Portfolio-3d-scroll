@@ -112,7 +112,7 @@ body {
   z-index: 10;
   padding: 0 40px;
   background: #000;
-  transition: position 0.5s;
+  transition: position 0.5s, height 0.5s;
   box-sizing: border-box;
 }
 .hero-section, .after-hero, .features-section, .contact-section {
@@ -125,8 +125,10 @@ body {
   height: auto;
   z-index: 1;
 }
+
 body.locked {
   overflow: hidden;
+  height: 100vh;
 }
 .hero-left {
   flex: 1.2;
