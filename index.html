@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scroll-Driven 3D Experience</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&family=Quintessential&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'Nasalization';
@@ -16,13 +18,14 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      font-family: 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-family: 'Quintessential', 'Jim Nightshade', 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
       background: #000;
       color: #fff;
       overflow-x: hidden;
+      font-size: 20px; /* Increased from default */
     }
     h1, h2, h3, .logo, .tag, .cta-btn, .next-btn {
-      font-family: 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-family: 'Jim Nightshade', 'Quintessential', 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
     }
     body {
       min-height: 100vh;
@@ -38,6 +41,14 @@
       top: 0;
       left: 0;
       z-index: 10;
+      /* Add initial state for slide-in */
+      opacity: 0;
+      transform: translateY(-80px);
+      transition: opacity 0.8s cubic-bezier(.4,0,.2,1), transform 0.8s cubic-bezier(.4,0,.2,1);
+    }
+    .navbar.navbar-slide-in {
+      opacity: 1;
+      transform: translateY(0);
     }
     .logo {
       font-size: 2rem;
@@ -125,7 +136,6 @@
       font-weight: 700;
       color: #fff;
       margin-bottom: 0.5em;
-      text-shadow: 0 0 24px #ffb86c, 0 0 48px #ffb86c44, 0 2px 24px #ffb86c22;
       letter-spacing: 0.01em;
       line-height: 1.1;
     }
@@ -334,6 +344,84 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .slide-in-down {
+      opacity: 0;
+      transform: translateY(-40px);
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+    }
+    .slide-in-down.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* New: for hero center image from bottom */
+    .slide-in-bottom {
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 1s cubic-bezier(.4,0,.2,1), transform 1s cubic-bezier(.4,0,.2,1);
+    }
+    .slide-in-bottom.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* New: for nav links from top */
+    .slide-in-top {
+      opacity: 0;
+      transform: translateY(-60px);
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), transform 0.9s cubic-bezier(.4,0,.2,1);
+    }
+    .slide-in-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Uiverse.io by biswacpcode - Let's Talk Button Style */
+    .uiverse-btn {
+      color: white;
+      text-decoration: none;
+      font-size: 18px; /* was 25px, now smaller */
+      border: none;
+      background: none;
+      font-weight: 600;
+      font-family: 'Poppins', 'Nasalization', 'Inter', 'Segoe UI', Arial, sans-serif;
+      cursor: pointer;
+      position: relative;
+      padding: 0.4em 1.1em; /* was 0.6em 1.6em, now smaller */
+      outline: none;
+      transition: color 0.2s;
+      display: inline-block;
+    }
+
+    .uiverse-btn::before {
+      margin-left: auto;
+    }
+
+    .uiverse-btn::after, .uiverse-btn::before {
+      content: '';
+      width: 0%;
+      height: 2px;
+      background: #f44336;
+      display: block;
+      transition: 0.5s;
+      position: absolute;
+      left: 0;
+    }
+
+    .uiverse-btn::before {
+      top: 0;
+    }
+
+    .uiverse-btn::after {
+      bottom: 0;
+    }
+
+    .uiverse-btn:hover::after, .uiverse-btn:hover::before {
+      width: 100%;
+    }
+
+    .uiverse-btn .arrow {
+      font-size: 1em;
+      vertical-align: middle;
+      margin-left: 0.3em;
+    }
     @media (max-width: 1100px) {
       .main-content { flex-direction: column; gap: 24px; padding-top: 80px; }
       .hero-left, .hero-right { max-width: 90vw; align-items: center; text-align: center; padding: 0; }
@@ -346,13 +434,13 @@
   <div class="fade-in-page" id="fade-in-page">
     <nav class="navbar slide-in-top-fade">
       <div class="logo slide-in-left">stX</div>
-      <ul class="nav-links slide-in-up">
+      <ul class="nav-links slide-in-top">
         <li><a href="#" class="active">Home</a></li>
         <li><a href="#">Projects</a></li>
         <li><a href="#">Services</a></li>
       </ul>
       <div class="nav-right slide-in-right">
-        <a href="#" class="talk-link">Let's talk <span class="arrow">↗</span></a>
+        <button class="uiverse-btn talk-link"><span>Let's talk</span> <span class="arrow">↗</span></button>
       </div>
     </nav>
     <section class="hero-section" id="hero-section">
@@ -360,9 +448,9 @@
         <div class="hero-left slide-in-left">
           <h1>Design That Feels.<br>Experiences That Resonate.</h1>
           <p class="hero-desc">We blend creativity, emotion, and innovation to create digital worlds that your audience can connect with.</p>
-          <a href="#" class="cta-btn slide-in-up">LET’S TALK <span class="arrow">↗</span></a>
+          <button class="uiverse-btn cta-btn slide-in-up"><span>LET’S TALK</span> <span class="arrow">↗</span></button>
         </div>
-        <div class="hero-center slide-in-up">
+        <div class="hero-center slide-in-bottom">
           <img id="sequence-img" src="sequence/00001.webp" alt="Scroll Animation Frame" draggable="false">
         </div>
         <div class="hero-right slide-in-right">
@@ -379,7 +467,35 @@
   </div>
   <section class="next-section" id="next-section">
     <div class="next-content">
-      <h2 class="next-title" id="wave-title">Welcome to the Next Section</h2>
+      <h2 class="next-title" id="wave-title">
+        <span class="wave-letter" style="visibility:hidden;">W</span>
+        <span class="wave-letter" style="visibility:hidden;">e</span>
+        <span class="wave-letter" style="visibility:hidden;">l</span>
+        <span class="wave-letter" style="visibility:hidden;">c</span>
+        <span class="wave-letter" style="visibility:hidden;">o</span>
+        <span class="wave-letter" style="visibility:hidden;">m</span>
+        <span class="wave-letter" style="visibility:hidden;">e</span>
+        <span class="wave-letter" style="visibility:hidden;"> </span>
+        <span class="wave-letter" style="visibility:hidden;">t</span>
+        <span class="wave-letter" style="visibility:hidden;">o</span>
+        <span class="wave-letter" style="visibility:hidden;"> </span>
+        <span class="wave-letter" style="visibility:hidden;">t</span>
+        <span class="wave-letter" style="visibility:hidden;">h</span>
+        <span class="wave-letter" style="visibility:hidden;">e</span>
+        <span class="wave-letter" style="visibility:hidden;"> </span>
+        <span class="wave-letter" style="visibility:hidden;">N</span>
+        <span class="wave-letter" style="visibility:hidden;">e</span>
+        <span class="wave-letter" style="visibility:hidden;">x</span>
+        <span class="wave-letter" style="visibility:hidden;">t</span>
+        <span class="wave-letter" style="visibility:hidden;"> </span>
+        <span class="wave-letter" style="visibility:hidden;">S</span>
+        <span class="wave-letter" style="visibility:hidden;">e</span>
+        <span class="wave-letter" style="visibility:hidden;">c</span>
+        <span class="wave-letter" style="visibility:hidden;">t</span>
+        <span class="wave-letter" style="visibility:hidden;">i</span>
+        <span class="wave-letter" style="visibility:hidden;">o</span>
+        <span class="wave-letter" style="visibility:hidden;">n</span>
+      </h2>
       <p class="next-desc" id="next-desc">This is a placeholder for your next content. You can replace this with your real site sections.</p>
       <button class="next-btn" id="next-btn">CONTINUE <span style="font-size:1.2em;vertical-align:middle;">↗</span></button>
     </div>
@@ -463,45 +579,46 @@
          const desc = document.getElementById('next-desc');
          const btn = document.getElementById('next-btn');
          if (title && !title.classList.contains('wave-animated')) {
-           // Split into spans
-           const text = title.textContent;
-           title.innerHTML = '';
-           Array.from(text).forEach((char, i) => {
-             const span = document.createElement('span');
-             span.textContent = char;
-             span.className = 'wave-letter';
-             span.style.visibility = 'hidden';
-             title.appendChild(span);
-           });
-           setTimeout(() => {
-             title.classList.add('wave-animated');
-             title.querySelectorAll('.wave-letter').forEach((el, i) => setTimeout(() => {
-               el.classList.add('visible');
-               el.style.visibility = 'visible';
-             }, i*40));
-           }, 100);
+           title.classList.add('wave-animated');
+           title.querySelectorAll('.wave-letter').forEach((el, i) => setTimeout(() => {
+             el.classList.add('visible');
+             el.style.visibility = 'visible';
+           }, i*40));
          }
          setTimeout(() => { if (desc) { desc.classList.add('visible'); desc.style.visibility = 'visible'; } }, 700);
          setTimeout(() => { if (btn) { btn.classList.add('visible'); btn.style.visibility = 'visible'; } }, 1100);
         }, 900);
       } else {
+        // Smoothly transition back to hero section
         heroSection.classList.remove('collapsed');
-        nextSection.classList.remove('visible');
+        // Add a delay before hiding next section for smoothness
+        setTimeout(() => {
+          nextSection.classList.remove('visible');
+        }, 500); // 500ms delay for smooth fade-out
+
         // Remove wave/fade-in classes if going back
         const title = document.getElementById('wave-title');
         const desc = document.getElementById('next-desc');
         const btn = document.getElementById('next-btn');
         if (title && title.classList.contains('wave-animated')) {
           title.classList.remove('wave-animated');
-          title.querySelectorAll('.wave-letter').forEach(el => el.classList.remove('visible'));
-          // Restore text content
-          title.textContent = 'Welcome to the Next Section';
-          // Remove visibility in case of back scroll
-          title.style.visibility = '';
+          // Animate out letters in reverse order
+          const letters = Array.from(title.querySelectorAll('.wave-letter'));
+          letters.reverse().forEach((el, i) => {
+            setTimeout(() => {
+              el.classList.remove('visible');
+              el.style.visibility = 'hidden';
+            }, i * 30);
+          });
         }
         if (desc) { desc.classList.remove('visible'); desc.style.visibility = 'hidden'; }
         if (btn) { btn.classList.remove('visible'); btn.style.visibility = 'hidden'; }
         window.addEventListener('scroll', preventScroll, { passive: false });
+
+        // Smooth scroll to top if not already at top
+        if (window.scrollY > 0) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
       requestAnimationFrame(animate);
     }
@@ -511,9 +628,44 @@
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => {
         document.getElementById('fade-in-page').classList.add('visible');
-        document.querySelectorAll('.slide-in-left').forEach((el, i) => setTimeout(() => el.classList.add('visible'), 200 + i*80));
-        document.querySelectorAll('.slide-in-right').forEach((el, i) => setTimeout(() => el.classList.add('visible'), 400 + i*80));
-        document.querySelectorAll('.slide-in-up').forEach((el, i) => setTimeout(() => el.classList.add('visible'), 600 + i*80));
+        // Animate navbar as a whole from top
+        setTimeout(() => {
+          document.querySelector('.navbar').classList.add('navbar-slide-in');
+        }, 100);
+        // Animate logo
+        setTimeout(() => {
+          document.querySelector('.logo').classList.add('visible');
+        }, 300);
+        // Animate nav links from top
+        setTimeout(() => {
+          document.querySelector('.nav-links').classList.add('visible');
+        }, 450);
+        // Animate nav right from right
+        setTimeout(() => {
+          document.querySelector('.nav-right').classList.add('visible');
+        }, 600);
+        // Animate hero left (headline, desc, cta) from left
+        setTimeout(() => {
+          document.querySelector('.hero-left').classList.add('visible');
+          // Animate cta button inside hero left
+          setTimeout(() => {
+            document.querySelector('.hero-left .cta-btn').classList.add('visible');
+          }, 200);
+        }, 800);
+        // Animate hero center (image) from bottom
+        setTimeout(() => {
+          document.querySelector('.hero-center').classList.add('visible');
+        }, 1000);
+        // Animate hero right (side desc/tags) from right
+        setTimeout(() => {
+          document.querySelector('.hero-right').classList.add('visible');
+          // Animate tags inside hero right
+          setTimeout(() => {
+            document.querySelectorAll('.hero-right .tag').forEach((el, i) => {
+              setTimeout(() => el.classList.add('visible'), i * 100);
+            });
+          }, 200);
+        }, 1200);
       }, 100);
     });
   </script>
